@@ -2,6 +2,23 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
 
+// 1. Lấy toàn bộ đơn hàng với lọc & sắp xếp (GET /api/orders?status=pending&sort=asc)
+router.get('/', async (req, res) => {
+  try {
+    let query = Order.find();
+
+    // Yêu cầu 1: Lọc theo trạng thái
+    if (req.query.status) {
+      query = query.where('status').equals(req.query.status);
+    }
+
+    const orders = await query;
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // 2. Tìm kiếm đơn hàng theo tên khách hàng (GET /api/orders/search?name=...)
 router.get('/search', async (req, res) => {
   try {
