@@ -12,6 +12,14 @@ router.get('/', async (req, res) => {
       query = query.where('status').equals(req.query.status);
     }
 
+    // Yêu cầu 3: Sắp xếp theo tổng tiền
+    if (req.query.sort) {
+      const sortOrder = req.query.sort === 'asc' ? 1 : -1;
+      query = query.sort({ totalAmount: sortOrder });
+    } else {
+      query = query.sort({ createdAt: -1 });
+    } 
+
     const orders = await query;
     res.json(orders);
   } catch (err) {
